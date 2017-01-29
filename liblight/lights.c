@@ -174,6 +174,47 @@ set_speaker_light_locked(struct light_device_t *dev,
 		write_int(LED_FILES[i], rgb[i]);
 	}
 
+	/*
+	 * The ROM implements the following speeds.
+	 *  on: 250, 500, 1000, 2500, 5000
+	 * off: 250, 500, 1000, 2500, 5000
+	 *
+	 * rise/fall times aren't mentioned anywhere in android.
+	 * so let us assume the decision is for us to take.
+	 *
+	 * kernel supports the following rise/fall times:
+	 * 2048us, 262ms, 524ms, 1.049s, 2.097s, 4.194s, 8.389s, 16.78s
+	 *
+	 * tryin to ease-in-out, let try to use the following values;
+	 * 		rise		thigh		fall		tlow
+	 *  250ms :	262ms		0ms		262ms		0ms
+	 *  500ms :	524ms		0ms		524ms		0ms
+	 * 1000ms :	1049ms		0ms		1049ms		0ms
+	 * 2500ms :	2097ms		~500ms		2097ms		~500ms
+	 * 5000ms :	4194ms		~800ms		4194ms		~800ms
+	 *
+	 * _assuming_ onMS = offMS for now, let's use rise, and thigh for now.
+	 *
+	 * onUS = onMS * 1000;
+	 * risetimes = [ 2048, 262000, 524000, 1049000, 2097000, 4194000, 8389000, 16780000 ]
+	 * delta = abs(onUS - risetimes[0])
+	 * deltaI = 0
+	 * for I, t in risetimes:
+	 * 	if abs(onUS - t) < delta:
+	 * 		delta = t
+	 * 		deltaI = I
+	 * rise = deltai
+	 * write_rise(rise)
+	 * thigh = (onUS - risetimes[deltaI])
+	 * if (thigh < 0):
+	 * 	; # nothing to do
+	 * else:
+	 * 	write_thigh(thigh)
+	 *
+	 * optimizations to come.
+	 *
+	 */
+
 	if (onMS == 0 || onMS == 1) { // LED always ON
 		;
 	} else { // LED blink

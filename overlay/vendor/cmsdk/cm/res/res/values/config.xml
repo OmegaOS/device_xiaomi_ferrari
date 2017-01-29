@@ -23,7 +23,10 @@
          LIGHTS_SEGMENTED_BATTERY_LED = 16
          LIGHTS_ADJUSTABLE_NOTIFICATION_LED_BRIGHTNESS = 32
          For example, a device support pulsating, RGB notification and
-         battery LEDs would set this config to 11. -->
-    <integer name="config_deviceLightCapabilities">11</integer>
+         battery LEDs would set this config to 11.
+
+         ferrari: 32 | 8 | 2 | 1
+     -->
+    <integer name="config_deviceLightCapabilities">43</integer>
 
 </resources>

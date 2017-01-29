@@ -213,6 +213,10 @@ set_speaker_light_locked(struct light_device_t *dev,
 	 *
 	 * optimizations to come.
 	 *
+	 * quirks:
+	 *   - thigh can only go till 9781.248ms
+	 *   - tlow can go till 76.890112ms
+	 *   - nothing in sysfs (that i knowof) to set thigh/tlow
 	 */
 
 	if (onMS == 0 || onMS == 1) { // LED always ON

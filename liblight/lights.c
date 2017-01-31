@@ -137,6 +137,7 @@ set_speaker_light_locked(struct light_device_t *dev,
 				struct light_state_t const *state)
 {
 	unsigned int colorRGB;
+	int alpha;
 	int rgb[3];
 	int onMS, offMS;
 	size_t i;
@@ -171,7 +172,7 @@ set_speaker_light_locked(struct light_device_t *dev,
 	}
 
 	for (i = 0; i < LED_SIZE; i++) {
-		write_int(LED_FILES[i], rgb[i]);
+		write_int(LED_FILE[i], rgb[i]);
 	}
 
 	/*
@@ -224,6 +225,8 @@ set_speaker_light_locked(struct light_device_t *dev,
 	} else { // LED blink
 		;
 	}
+
+	return 0;
 }
 
 static void
@@ -234,7 +237,7 @@ handle_speaker_light_locked(struct light_device_t *dev)
 	} else if (is_lit(&g_notification)) {
 		set_speaker_light_locked(dev, &g_notification);
 	} else {
-		set_battery_light_locked(dev, &g_battery);
+		set_speaker_light_locked(dev, &g_battery);
 	}
 }
 
